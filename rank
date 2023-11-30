@@ -1,0 +1,33 @@
+#!/bin/bash
+if [[ -z "$MAX" ]]; then
+    MAX=5
+fi
+
+STATS_DIR="$HOME/.local/share/fileStat"
+COMMAND="$1"
+STATS_FILE="$STATS_DIR/$COMMAND.json"
+
+if [[ -z $COMMAND ]]; then
+    echo "Please specify the command"
+    exit -1;
+fi
+
+if [[ ! -f $STATS_FILE ]]; then
+    echo "Could not find the stats file for '$COMMAND' ($STATS_FILE)"
+    exit -1
+fi
+
+SORTED=$(jq --sort-keys . $STATS_FILE)
+KEYS=$(echo $SORTED | jq -r '. | keys[]')
+i=0
+echo "Most $MAX launched files with $COMMAND:"
+for key in $KEYS; do
+    if [[ $i -ge MAX ]]; then
+        break 
+    fi
+    value=$(echo "$SORTED" | jq -r ".$key")
+
+    echo "$(($i+1)). $key: $value"
+
+    ((i++))
+done
