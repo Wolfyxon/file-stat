@@ -22,10 +22,11 @@ if [[ ! -f $STATS_FILE ]]; then
     echo \{\} > "$STATS_FILE"
 fi
 
-FILE=$(realpath "$1")
+FILE="$1"
 
 if [[ -f $FILE ]]; then
     # Dev note: If the stats file isn't updating, check if the target file exists (I keep forgetting that)
+    FILE = $(realpath "$FILE")
     DATA=$(cat "$STATS_FILE")
     AMT=$(echo $DATA | jq ".$FILE // 0")
     AMT=$(( $AMT + 1 ))
