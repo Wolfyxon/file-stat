@@ -25,6 +25,7 @@ fi
 FILE="$1"
 
 if [[ -f $FILE ]]; then
+    # Dev note: If the stats file isn't updating, check if the target file exists (I keep forgetting that)
     DATA=$(cat "$STATS_FILE")
     AMT=$(echo $DATA | jq ".$FILE // 0")
     AMT=$(( $AMT + 1 ))
