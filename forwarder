@@ -28,9 +28,9 @@ if [[ -f $FILE ]]; then
     # Dev note: If the stats file isn't updating, check if the target file exists (I keep forgetting that)
     FILE = $(realpath "$FILE")
     DATA=$(cat "$STATS_FILE")
-    AMT=$(echo $DATA | jq ".$FILE // 0")
+    AMT=$(echo $DATA | jq ".[\"$FILE\"] // 0")
     AMT=$(( $AMT + 1 ))
-    DATA=$(jq ".$FILE = $AMT" $STATS_FILE)
+    DATA=$(jq ".[\"$FILE\"] = $AMT" $STATS_FILE)
     echo $DATA >| $STATS_FILE
 fi
 
