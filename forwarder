@@ -29,6 +29,7 @@ if [[ -f $FILE ]]; then
     AMT=$(echo $DATA | jq ".$FILE // 0")
     AMT=$(( $AMT + 1 ))
     DATA=$(jq ".$FILE = $AMT" $STATS_FILE)
+    echo $DATA >| $STATS_FILE
 fi
 
 $PROGRAM "$@"
