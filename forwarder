@@ -1,0 +1,34 @@
+#!/bin/bash
+
+#$PROGRAM="your-command"
+
+if [[ -z $PROGRAM ]]; then
+    echo "Please modify this script or specify PROGRAM in the environment variables."
+    exit -1;
+fi
+
+EXEC=$(echo $PROGRAM | grep -o "^\w*\b")
+
+if [[ -z $(command -v $PROGRAM) ]]; then
+    echo "$EXEC: no such file or directory"
+    exit -1;
+fi
+
+STATS_DIR="$HOME/.local/share/fileStat"
+STATS_FILE="$STATS_DIR/$EXEC.json"
+
+mkdir -p "$STATS_DIR"
+if [[ ! -f $STATS_FILE ]]; then
+    echo \{\} > "$STATS_FILE"
+fi
+
+FILE="$1"
+
+if [[ -f $FILE ]]; then
+    DATA=$(cat "$STATS_FILE")
+    AMT=$(echo $DATA | jq ".$FILE // 0")
+    AMT=$(( $AMT + 1 ))
+    DATA=$(jq ".$FILE = $AMT" $STATS_FILE)
+fi
+
+$PROGRAM "$@"
